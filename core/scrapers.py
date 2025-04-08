@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import requests
 from bs4 import BeautifulSoup
@@ -85,7 +86,7 @@ def _parse_datetime(
     try:
         dt = datetime.strptime(dt_str, fmt)  # noqa: DTZ007
         if make_aware and timezone.is_naive(dt):
-            dt = timezone.make_aware(dt)  # Uses settings.TIME_ZONE
+            dt = timezone.make_aware(dt, ZoneInfo("UTC"))
     except (ValueError, TypeError):
         logger.exception(
             f"Could not parse datetime string '{dt_str}' with format '{fmt}'",  # noqa: G004
