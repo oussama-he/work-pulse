@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load partials %}
+
+{% block title %}
+  Projects Archive | {{ block.super }}
+{% endblock title %}
+{% block content %}
+  <h1>Projects Archive</h1>
+  {% partialdef project-list inline %}
+  {% for project in page.object_list %}
+    <div class="card mb-2"
+         dir="rtl"
+         {% if forloop.last and page.has_next %} hx-get="./?page={{ page.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-12 fs-3 fw-bold">
+            <a href="{{ project.url }}" target="_blank">{{ project.title }}</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-5 col-md-3">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="icon icon-tabler icons-tabler-outline icon-tabler-world">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+              <path d="M3.6 9h16.8" />
+              <path d="M3.6 15h16.8" />
+              <path d="M11.5 3a17 17 0 0 0 0 18" />
+              <path d="M12.5 3a17 17 0 0 1 0 18" />
+            </svg>
+            <span class="text-muted fw-bold">{{ project.source }}</span>
+          </div>
+          <div class="col-7 col-md-3">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="24"
+                 height="24"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-5">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 12l2 3" />
+              <path d="M12 7v5" />
+            </svg>
+            <span class="text-muted fw-bold">{{ project.published_at|date:"Y-m-d H:i:s"|default:"-" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endpartialdef project-list %}
+{% endblock content %}

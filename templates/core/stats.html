@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Stats | {{ block.super }}
+{% endblock title %}
+{% block page_title %}
+  Stats
+{% endblock page_title %}
+{% block content %}
+  <div class="row row-deck row-cards mb-3">
+    <div class="col-sm-6 col-lg-3">{% include 'core/includes/project-count-card.html' %}</div>
+    <div class="col-sm-6 col-lg-9">
+      <div class="row">
+        {% for item in projects_per_source %}
+          <div class="col-lg-3">
+            <div class="card card-sm mb-2">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <img src="{% static 'img/'|add:item.domain|add:'.png' %}"
+                         width="50"
+                         alt="logo" />
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">{{ item.count }} Projects</div>
+                    <div class="text-secondary">{{ item.domain }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

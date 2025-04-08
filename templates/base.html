@@ -1,0 +1,90 @@
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta20
+* @link https://tabler.io
+* Copyright 2018-2023 The Tabler Authors
+* Copyright 2018-2023 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      {% block title %}
+      {% endblock title %}
+    </title>
+    <!-- CSS files -->
+    <link href="{% static 'css/tabler.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/app.css' %}" rel="stylesheet" />
+    <style>
+      @import url('https://rsms.me/inter/inter.css');
+
+      :root {
+        /*--tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;*/
+        --tblr-font-sans-serif: "Fira Sans", "Noto Sans Arabic";
+      }
+
+      body {
+        font-feature-settings: "cv03", "cv04", "cv11";
+      }
+    </style>
+  </head>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <script src="{% static 'js/demo-theme.js' %}"></script>
+    <div class="page">
+      <!-- Navbar -->
+      {% include "includes/navbar.html" %}
+      <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+          <div class="container-xl">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                  {% block page_pretitle %}
+                  {% endblock page_pretitle %}
+                </div>
+                <h2 class="page-title">
+                  {% block page_title %}
+                  {% endblock page_title %}
+                </h2>
+              </div>
+              <!-- Page title actions -->
+              <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                  {% block page_title_actions %}
+                  {% endblock page_title_actions %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+          <div class="container-xl">
+            {% block content %}
+            {% endblock content %}
+          </div>
+        </div>
+        {% include "includes/footer.html" %}
+      </div>
+    </div>
+    <script src="{% static 'js/tabler.js' %}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.3/dist/htmx.min.js"
+            integrity="sha256-SRlVzRgQdH19e5zLk2QAr7dg4G0l1T5FcrZLZWOyeE4="
+            crossorigin="anonymous"
+            defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.13/dist/hdb.min.js"
+            integrity="sha256-eqsD5t9zqxRfgY93GIt7yy5ckoxF/aiU5MRHMiAFnq4="
+            crossorigin="anonymous"
+            defer></script>
+    {% block inline_javascript %}
+    {% endblock inline_javascript %}
+  </body>
+</html>
