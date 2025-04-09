@@ -21,7 +21,7 @@ REQUEST_HEADERS = {
 }
 
 PROXIES = {
-    "http": "http://ovyvczyt:uebhic7r5gjf@161.123.152.115:6360",
+    "http": "http://ovyvczyt:uebhic7r5gjf@45.151.162.198:6600",
 }
 
 SOURCES_CONFIG = {
