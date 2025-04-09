@@ -5,6 +5,18 @@ default_language_version:
   python: python3.10
 
 repos:
+  - repo: local
+    hooks:
+      - id: update-requirements-uv
+        # Updated name for clarity
+        name: Update requirements.txt if uv.lock changed
+        entry: bash -c 'echo "uv.lock changed, updating requirements.txt..." && uv pip freeze > requirements.txt && git add requirements.txt'
+        language: system
+        # Filter: Only run this hook if uv.lock is among the staged files
+        files: ^uv\.lock$
+        # We don't need the filename passed to the command itself
+        pass_filenames: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
