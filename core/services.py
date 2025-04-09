@@ -6,8 +6,6 @@ from core.scrapers import fetch_baaeed_jobs
 from core.scrapers import fetch_bahr_projects
 from core.scrapers import fetch_emploitic_jobs
 from core.scrapers import fetch_mostaql_projects
-from core.scrapers import fetch_nafezly_projects
-from core.scrapers import fetch_ouedkniss_offers
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +16,11 @@ def get_new_projects():
     """
     # Define all source fetchers with their function references
     source_fetchers = [
-        fetch_nafezly_projects,
+        # fetch_nafezly_projects,
         fetch_baaeed_jobs,
         fetch_emploitic_jobs,
         fetch_bahr_projects,
-        fetch_ouedkniss_offers,
+        # fetch_ouedkniss_offers,
         fetch_mostaql_projects,
     ]
 
