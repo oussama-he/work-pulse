@@ -20,6 +20,10 @@ REQUEST_HEADERS = {
     "Upgrade-Insecure-Requests": "1",
 }
 
+PROXIES = {
+    "http": "http://ovyvczyt:uebhic7r5gjf@161.123.152.115:6360",
+}
+
 SOURCES_CONFIG = {
     "mostaql": {
         "url": "https://mostaql.com/projects?category=development,support&budget_max=10000&sort=latest",
@@ -74,6 +78,7 @@ def _make_request(url: str, method: str = "GET", **kwargs) -> requests.Response 
             url,
             headers=REQUEST_HEADERS,
             timeout=15,
+            proxies=PROXIES,
             **kwargs,
         )
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
