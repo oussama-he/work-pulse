@@ -18,7 +18,7 @@ class BaseModel(TimestampModel):
 
 class Project(BaseModel):
     title = models.CharField(max_length=255)
-    url = models.URLField(unique=True, max_length=500)
+    url = models.URLField(unique=True, max_length=1000)
     description = models.TextField(default="")
     viewed = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True, blank=True)
