@@ -14,11 +14,14 @@ django-template-partials==24.4
 djlint==1.36.4
 editorconfig==0.17.0
 filelock==3.18.0
+gunicorn==23.0.0
+h11==0.14.0
 identify==2.6.9
 idna==3.10
 jsbeautifier==1.15.4
 json5==0.12.0
 nodeenv==1.9.1
+packaging==24.2
 pathspec==0.12.1
 platformdirs==4.3.7
 pre-commit==4.2.0
@@ -36,4 +39,5 @@ tomli==2.2.1
 tqdm==4.67.1
 typing-extensions==4.12.2
 urllib3==2.3.0
+uvicorn==0.34.0
 virtualenv==20.30.0
