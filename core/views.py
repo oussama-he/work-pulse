@@ -93,7 +93,7 @@ def get_project_count_card(request):
 def project_archive_view(request):
     qs = Project.objects.filter(viewed=True)
     template = "core/projects-archive.html"
-    paginator = Paginator(qs, 500)
+    paginator = Paginator(qs, 25)
     page_number = request.GET.get("page") or 1
     try:
         page = paginator.page(int(page_number))
