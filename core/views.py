@@ -20,7 +20,7 @@ from core.services import get_new_projects
 
 def home(request):
     get_new_projects()
-    new_projects = Project.objects.filter(viewed=False)
+    new_projects = Project.objects.filter(viewed=False).order_by(F("published_at").desc(nulls_last=True))
     new_projects_stats = {
         "Total": new_projects.count(),
         "emploitic.com": new_projects.filter(url__icontains="https://emploitic.com/").count(),
