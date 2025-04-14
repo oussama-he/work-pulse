@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% load core_extra %}
+
 {% block title %}
   Home | {{ block.super }}
 {% endblock title %}
@@ -15,73 +18,63 @@
       </div>
     {% endfor %}
   </div>
-  <div class="row">
-    <div class="col-12">
-      <div id="carouselExample" class="carousel slide d-flex">
-        <button class="btn btn-outline-primary"
-                type="button"
-                data-bs-target="#carouselExample"
-                data-bs-slide="prev">
-          <span class="carousel-control-prev-icon text-primary" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <div class="carousel-inner">
-          {% for project in projects %}
-            <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}"
-                 id="carousel-item-{{ forloop.counter0 }}"
-                 data-project-id="{{ project.id }}">
-              {# djlint:off #}
-              <div class="card" style="height:25rem;">
-              {# djlint:on #}
-              <div class="card-body pb-0">
-                <div class="card-title">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      {% for project in projects %}
+        <div class="card project-card">
+          <div class="card-body">
+            <div class="d-flex">
+              <img src="{% static 'img/'|add:project.source|add:'.png' %}"
+                   class="rounded-circle me-3 avatar"
+                   alt="{{ project.source }} logo" />
+              <div class="flex-grow-1">
+                <div class="mb-1">
+                  <span class="fw-bold">{{ project.source }}</span>
+                  {% if project.published_at %}
+                    <span class="text-muted"
+                          title="{{ project.published_at|date:'H:i' }} · {{ project.published_at|date:'d-m-Y' }}">
+                      {{ project.published_at|short_since }}
+                    </span>
+                  {% endif %}
+                  <span class="viewed text-primary d-none">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="icon icon-tabler icons-tabler-outline icon-tabler-eye-check">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                      <path d="M11.102 17.957c-3.204 -.307 -5.904 -2.294 -8.102 -5.957c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6a19.5 19.5 0 0 1 -.663 1.032" />
+                      <path d="M15 19l2 2l4 -4" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="card-text mb-2 fs-3" dir="auto">
                   <h3>
                     <a href="{{ project.url }}" target="_blank">{{ project.title }}</a>
                   </h3>
+                  <div class="text-clip"
+                       hx-put="{% url 'core:mark-viewed' project.pk %}"
+                       hx-trigger="intersect threshold:1 once"
+                       hx-on::after-request="if(event.detail.successful)this.closest('.project-card').querySelector('.viewed').classList.remove('d-none')">
+                    {% if project.source == 'emploitic.com' %}
+                      {{ project.description|safe }}
+                    {% else %}
+                      {{ project.description|linebreaks }}
+                    {% endif %}
+                  </div>
+                  <a class="expand-btn">Show more</a>
                 </div>
-                {# djlint:off #}
-                  <div style="overflow-y:scroll;max-height:16rem;">
-                {# djlint:on #}
-                {% if 'emploitic.com' in project.source %}
-                  {{ project.description|safe }}
-                {% else %}
-                  <p>{{ project.description|default:""|linebreaks }}</p>
-                {% endif %}
-              </div>
-            </div>
-            <div class="card-footer">
-              <div>
-                <span class="text-muted fw-bold">Source:</span>
-                <a href="{{ project.url }}" target="_blank">{{ project.source }}</a>
-              </div>
-              <div>
-                <span class="text-muted fw-bold">Published at</span>
-                {{ project.published_at|date:"Y-m-d H:i"|default:"-" }}
               </div>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
-    <button class="btn btn-outline-primary"
-            type="button"
-            data-bs-target="#carouselExample"
-            data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
-</div>
-</div>
 {% endblock content %}
-{% block inline_javascript %}
-  <script>
-    const myCarousel = document.getElementById('carouselExample');
-    myCarousel.addEventListener('slide.bs.carousel', event => {
-      const slideIdx = event.from;
-      const projectId = event.target.querySelector(`#carousel-item-${slideIdx}`).dataset.projectId;
-      const url = "{% url 'core:mark-viewed' pk=999 %}".replace('999', projectId);
-      htmx.ajax('PUT', url);
-    })
-  </script>
-{% endblock inline_javascript %}
