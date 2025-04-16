@@ -20,7 +20,7 @@ from core.services import get_new_projects
 
 def home(request):
     get_new_projects()
-    new_projects = Project.objects.filter(viewed=False).order_by(F("published_at").desc(nulls_last=True))
+    new_projects = Project.objects.filter(viewed__isnull=True).order_by(F("published_at").desc(nulls_last=True))
     new_projects_stats = {
         "Total": new_projects.count(),
         "emploitic.com": new_projects.filter(url__icontains="https://emploitic.com/").count(),
@@ -91,7 +91,7 @@ def get_project_count_card(request):
 
 
 def project_archive_view(request):
-    qs = Project.objects.filter(viewed=True)
+    qs = Project.objects.filter(viewed__isnull=False)
     template = "core/projects-archive.html"
     paginator = Paginator(qs, 25)
     page_number = request.GET.get("page") or 1
@@ -115,6 +115,6 @@ def project_archive_view(request):
 @require_http_methods(["PUT"])
 def mark_viewed(request, pk):
     project = get_object_or_404(Project, pk=pk)
-    project.viewed = True
+    project.viewed = timezone.now()
     project.save()
     return HttpResponse(status=204)
