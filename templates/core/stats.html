@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load static %}
+{% load static humanize %}
 {% load partials %}
 
 {% block title %}
@@ -36,7 +36,7 @@
               </div>
             </div>
           </div>
-          <div class="h1 mb-3">{{ project_count }}</div>
+          <div class="h1 mb-3">{{ project_count|intcomma }}</div>
           <div class="d-flex mb-2"></div>
         </div>
       </div>
@@ -55,7 +55,7 @@
                        alt="logo" />
                 </div>
                 <div class="col">
-                  <div class="font-weight-medium">{{ item.count }} Projects</div>
+                  <div class="font-weight-medium">{{ item.count|intcomma }} Projects</div>
                   <div class="text-secondary">{{ item.domain }}</div>
                 </div>
               </div>
