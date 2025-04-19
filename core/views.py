@@ -87,7 +87,7 @@ def get_project_count_card(request):
             context["project_count"] = qs.count()
             context["selected_period"] = PeriodOption.ALL_TIME.label
 
-    return render(request, "core/includes/project-count-card.html", context)
+    return render(request, "core/stats.html#project-count-card", context)
 
 
 def project_archive_view(request):
