@@ -286,217 +286,189 @@ def fetch_ouedkniss_offers() -> list[dict[str, Any]]:
     config = SOURCES_CONFIG["ouedkniss"]
     query = """
         query SearchQuery($q: String, $filter: SearchFilterInput,
-                        $mediaSize: MediaSize = MEDIUM)
-            {  search(q: $q, filter: $filter) {
-            announcements {
-                data {
-                ...AnnouncementContent
-                smallDescription {
-                    valueText
-                    __typename
-                }
+                      $mediaSize: MediaSize = MEDIUM)
+                         {
+      search(q: $q, filter: $filter) {
+     announcements {
+          data {
+            ...AnnouncementContent
+            smallDescription {
+              valueText
+              __typename
+            }
             noAdsense
-        __typename
-        }
-        paginatorInfo
-        {
+            __typename
+          }
+          paginatorInfo {
             lastPage
-        hasMorePages
-        __typename
+            hasMorePages
+            __typename
+          }
+          __typename
         }
-        __typename
-        }
-        active
-        {
-            category
-        {
+        active {
+          category {
             id
-        name
-        slug
-        icon
-        delivery
-        deliveryType
-        priceUnits
-        children
-        {
-            id
-        name
-        slug
-        icon
-        __typename
-        }
-        specifications
-        {
-            isRequired
-        specification
-        {
-            id
-        codename
-        label
-        type
-
-        class
-            datasets
-            {
+            name
+            slug
+            icon
+            delivery
+            deliveryType
+            priceUnits
+            children {
+              id
+              name
+              slug
+              icon
+              __typename
+            }
+            specifications {
+              isRequired
+              specification {
+                id
                 codename
-            label
-            __typename
+                label
+                type
+                class
+                datasets {
+                  codename
+                  label
+                  __typename
+                }
+                dependsOn {
+                  id
+                  codename
+                  __typename
+                }
+                subSpecifications {
+                  id
+                  codename
+                  label
+                  type
+                  __typename
+                }
+                allSubSpecificationCodenames
+                __typename
+              }
+              __typename
             }
-            dependsOn
-            {
+            parentTree {
+              id
+              name
+              slug
+              icon
+              children {
                 id
-            codename
-            __typename
+                name
+                slug
+                icon
+                __typename
+              }
+              __typename
             }
-            subSpecifications
-            {
-                id
-            codename
-            label
-            type
-            __typename
+            parent {
+              id
+              name
+              icon
+              slug
+              __typename
             }
-            allSubSpecificationCodenames
             __typename
-
+          }
+          count
+          filter {
+            cities {
+              id
+              name
+              __typename
+            }
+            regions {
+              id
+              name
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        suggested {
+          category {
+            id
+            name
+            slug
+            icon
+            __typename
+          }
+          count
+          __typename
         }
         __typename
-        }
-        parentTree
-        {
-            id
-        name
-        slug
-        icon
-        children
-        {
+      }
+    }
+
+    fragment AnnouncementContent on Announcement {
+      id
+      title
+      slug
+      createdAt: refreshedAt
+      isFromStore
+      isCommentEnabled
+      userReaction {
+        isBookmarked
+        isLiked
+        __typename
+      }
+      hasDelivery
+      deliveryType
+      paymentMethod
+      likeCount
+      description
+      status
+      cities {
         id
         name
         slug
-        icon
-        __typename
-
+        region {
+          id
+          name
+          slug
+          __typename
         }
         __typename
-        }
-        parent
-        {
-            id
-        name
-        icon
-        slug
-        __typename
-        }
-        __typename
-        }
-        count
-        filter
-        {
-            cities
-        {
-            id
-        name
-        __typename
-        }
-        regions
-        {
-            id
-        name
-        __typename
-        }
-        __typename
-        }
-        __typename
-        }
-        suggested
-        {
-            category
-        {
-            id
-        name
-        slug
-        icon
-        __typename
-        }
-        count
-        __typename
-        }
-        __typename
-        }
-        }
-
-        fragment
-        AnnouncementContent
-        on
-        Announcement
-        {
-            id
-        title
-        slug
-        createdAt: refreshedAt
-        isFromStore
-        isCommentEnabled
-        userReaction
-        {
-            isBookmarked
-        isLiked
-        __typename
-        }
-        hasDelivery
-        deliveryType
-        likeCount
-        description
-        status
-        cities
-        {
-            id
-        name
-        slug
-        region
-        {
-            id
-        name
-        slug
-        __typename
-        }
-        __typename
-        }
-        store
-        {
-            id
+      }
+      store {
+        id
         name
         slug
         imageUrl
         isOfficial
         isVerified
         __typename
-        }
-        user
-        {
-            id
+      }
+      user {
+        id
         __typename
-        }
-        defaultMedia(size: $mediaSize) {
-            mediaUrl
+      }
+      defaultMedia(size: $mediaSize) {
+        mediaUrl
         mimeType
         thumbnail
         __typename
-        }
-        price
-        pricePreview
-        priceUnit
-        oldPrice
-        oldPricePreview
-        priceType
-        exchangeType
-        category
-        {
-            id
+      }
+      price
+      pricePreview
+      priceUnit
+      oldPrice
+      oldPricePreview
+      priceType
+      exchangeType
+      category {
+        id
         slug
         __typename
-        }
-        __typename
-        }
+      }
+      __typename
+    }
         """
 
     payload = {
@@ -511,13 +483,14 @@ def fetch_ouedkniss_offers() -> list[dict[str, Any]]:
                 "delivery": None,
                 "regionIds": [],
                 "cityIds": [],
-                "priceRange": [],
-                "exchange": False,
+                "priceRange": [None, None],
+                "exchange": None,
                 "hasPictures": False,
                 "hasPrice": False,
                 "priceUnit": None,
                 "fields": [],
                 "page": 1,
+                "orderByField": {"field": "REFRESHED_AT"},
                 "count": 48,
             },
         },
