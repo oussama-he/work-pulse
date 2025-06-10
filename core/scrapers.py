@@ -43,11 +43,14 @@ SOURCES_CONFIG = {
     },
     "bahr": {
         "url": (
-            "https://bahr.sa/api/projects?status[]=Open&offset=10&sort=DESC&sortBy=publishDate"
-            "&categories[]=0190c21f-f7cc-75f2-aef3-6d020d74e9a1"
-            "&categories[]=0190c21f-f7ad-7222-9410-13e74073549c"
-            "&categories[]=0190c21f-f7cd-7c9e-b4e5-01b4229cfc4f"
-            "&categories[]=0190c21f-f7cc-75f2-aef3-6d020ca6b9c7"
+            "https://bahr.sa/api/recruitments"
+            "?offset=10&sort=DESC"
+            "&sortBy=project.publishDate"
+            "&projectSearchPhrase="
+            "&projectCategories[]=0190c21f-f7ad-7222-9410-13e74073549c"
+            "&projectCategories[]=0190c21f-f7cc-75f2-aef3-6d0209251c29"
+            "&projectCategories[]=0190c21f-f7cc-75f2-aef3-6d020ca6b9c7"
+            "&recruitmentStatus[]=Open"
             "&page=1"
         ),
         "parser": "json",
@@ -262,12 +265,12 @@ def fetch_bahr_projects() -> list[dict[str, Any]]:
 
     projects = []
     try:
-        data = response.json().get("data", {}).get("projects", [])
+        data = response.json().get("data", {}).get("recruitments", [])
         projects.extend(
             {
-                "title": project.get("title"),
-                "description": project.get("description"),
-                "url": f"https://bahr.sa/en/projects/{project.get('id')}",
+                "title": project["project"]["title"],
+                "description": project["project"]["description"],
+                "url": f"https://bahr.sa/en/projects/recruitments/{project.get('id')}",
                 "published_at": _parse_datetime(
                     project.get("createdAt"),
                     "%Y-%m-%d %H:%M:%S",
