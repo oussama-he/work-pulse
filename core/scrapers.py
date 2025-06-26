@@ -86,6 +86,26 @@ def _make_request(url: str, method: str = "GET", **kwargs) -> requests.Response 
         return response
 
 
+def _parse_arabic_date(dt: str) -> str:
+    arabic_months = {
+        "يناير": 1,
+        "فبراير": 2,
+        "مارس": 3,
+        "أبريل": 4,
+        "مايو": 5,
+        "يونيو": 6,
+        "يوليو": 7,
+        "أغسطس": 8,
+        "سبتمبر": 9,
+        "أكتوبر": 10,
+        "نوفمبر": 11,
+        "ديسمبر": 12,
+    }
+    day, month, year, _, time, _ = dt.split()
+    month = arabic_months[month]
+    return f"{year}-{month}-{day} {time}"
+
+
 def _parse_datetime(
     dt_str: str,
     fmt: str,
@@ -234,15 +254,16 @@ def fetch_baaeed_jobs() -> list[dict[str, Any]]:
         soup = BeautifulSoup(response.text, "html.parser")
         for job_row in soup.select("section.baaeed-card table tr"):
             published_at_str = _safe_extract_attr(job_row, "time", "datetime")
+            published_at_str = _parse_arabic_date(published_at_str)
             jobs.append(
                 {
                     "title": _safe_extract_text(
                         job_row,
-                        ".baaeed-list__details h3.card-title a",
+                        ".baaeed-list__item--details h3.card-title a",
                     ),
                     "url": _safe_extract_attr(
                         job_row,
-                        ".baaeed-list__details h3.card-title a",
+                        ".baaeed-list__item--details h3.card-title a",
                         "href",
                     ),
                     "description": _safe_extract_text(job_row, ".card-brief a"),
