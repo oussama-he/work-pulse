@@ -21,3 +21,7 @@
     text-overflow: ellipsis;
     white-space: normal;
 }
+
+.stretched-link::after {
+    display: none;
+}
