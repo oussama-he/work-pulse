@@ -25,21 +25,25 @@ SOURCES_CONFIG = {
         "url": "https://mostaql.com/projects?category=development,support&budget_max=10000&sort=latest",
         "parser": "html",
         "type": "project",
+        "color": "#2CAAE2",
     },
     "nafezly": {
         "url": "https://nafezly.com/projects?specialize=development&page=1",
         "parser": "html",
         "type": "project",
+        "color": "#0290FE",
     },
     "emploitic": {
         "url": "https://emploitic.com/api/v4/jobs?sort[0]=publishedAt_timestamp:desc&filter=(criteria.profession.id=%27a0d04378f37973ffa3b2aa8b3e27a3f0a98de06d%27)&pagination[page]=1&pagination[pageSize]=20",
         "parser": "json",
         "type": "job",
+        "color": "#02C97B",
     },
     "baaeed": {
         "url": "https://baaeed.com/remote-jobs?sort=latest&categories=remote-programming-jobs,other-remote-jobs",
         "parser": "html",
         "type": "job",
+        "color": "#7566F0",
     },
     "bahr": {
         "url": (
@@ -55,11 +59,13 @@ SOURCES_CONFIG = {
         ),
         "parser": "json",
         "type": "project",
+        "color": "#1F5FB3",
     },
     "ouedkniss": {
         "url": "https://api.ouedkniss.com/graphql",
         "parser": "graphql",
         "type": "offer",
+        "color": "#F3B605",
     },
 }
 
