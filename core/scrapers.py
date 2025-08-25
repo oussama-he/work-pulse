@@ -21,31 +21,31 @@ REQUEST_HEADERS = {
 }
 
 SOURCES_CONFIG = {
-    "mostaql": {
+    "mostaql.com": {
         "url": "https://mostaql.com/projects?category=development,support&budget_max=10000&sort=latest",
         "parser": "html",
         "type": "project",
         "color": "#2CAAE2",
     },
-    "nafezly": {
+    "nafezly.com": {
         "url": "https://nafezly.com/projects?specialize=development&page=1",
         "parser": "html",
         "type": "project",
         "color": "#0290FE",
     },
-    "emploitic": {
+    "emploitic.com": {
         "url": "https://emploitic.com/api/v4/jobs?sort[0]=publishedAt_timestamp:desc&filter=(criteria.profession.id=%27a0d04378f37973ffa3b2aa8b3e27a3f0a98de06d%27)&pagination[page]=1&pagination[pageSize]=20",
         "parser": "json",
         "type": "job",
         "color": "#02C97B",
     },
-    "baaeed": {
+    "baaeed.com": {
         "url": "https://baaeed.com/remote-jobs?sort=latest&categories=remote-programming-jobs,other-remote-jobs",
         "parser": "html",
         "type": "job",
         "color": "#7566F0",
     },
-    "bahr": {
+    "bahr.sa": {
         "url": (
             "https://bahr.sa/api/recruitments"
             "?offset=10&sort=DESC"
@@ -61,7 +61,7 @@ SOURCES_CONFIG = {
         "type": "project",
         "color": "#1F5FB3",
     },
-    "ouedkniss": {
+    "ouedkniss.com": {
         "url": "https://api.ouedkniss.com/graphql",
         "parser": "graphql",
         "type": "offer",
@@ -166,7 +166,7 @@ def _safe_extract_attr(
 
 
 def fetch_mostaql_projects() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["mostaql"]
+    config = SOURCES_CONFIG["mostaql.com"]
     response = _make_request(config["url"])
     if not response:
         return []
@@ -193,7 +193,7 @@ def fetch_mostaql_projects() -> list[dict[str, Any]]:
 
 
 def fetch_nafezly_projects() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["nafezly"]
+    config = SOURCES_CONFIG["nafezly.com"]
     response = _make_request(config["url"])
     if not response:
         return []
@@ -215,7 +215,7 @@ def fetch_nafezly_projects() -> list[dict[str, Any]]:
 
 
 def fetch_emploitic_jobs() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["emploitic"]
+    config = SOURCES_CONFIG["emploitic.com"]
     response = _make_request(config["url"])
     if not response:
         return []
@@ -250,7 +250,7 @@ def fetch_emploitic_jobs() -> list[dict[str, Any]]:
 
 
 def fetch_baaeed_jobs() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["baaeed"]
+    config = SOURCES_CONFIG["baaeed.com"]
     response = _make_request(config["url"])
     if not response:
         return []
@@ -285,7 +285,7 @@ def fetch_baaeed_jobs() -> list[dict[str, Any]]:
 
 
 def fetch_bahr_projects() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["bahr"]
+    config = SOURCES_CONFIG["bahr.sa"]
     response = _make_request(config["url"])
     if not response:
         return []
@@ -313,7 +313,7 @@ def fetch_bahr_projects() -> list[dict[str, Any]]:
 
 
 def fetch_ouedkniss_offers() -> list[dict[str, Any]]:
-    config = SOURCES_CONFIG["ouedkniss"]
+    config = SOURCES_CONFIG["ouedkniss.com"]
     query = """
         query SearchQuery($q: String, $filter: SearchFilterInput,
                       $mediaSize: MediaSize = MEDIUM)
