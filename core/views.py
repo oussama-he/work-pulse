@@ -8,13 +8,16 @@ from django.db.models import TextChoices
 from django.db.models import Value
 from django.db.models.functions import StrIndex
 from django.db.models.functions import Substr
+from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
+from django.views.generic import TemplateView
 
 from core.models import Project
+from core.scrapers import SOURCES_CONFIG
 from core.services import get_new_projects
 
 
@@ -41,53 +44,88 @@ def home(request):
 
 
 class PeriodOption(TextChoices):
-    ALL_TIME = "all_time"
-    LAST_7_DAYS = "last_7_days"
-    LAST_30_DAYS = "last_30_days"
-    LAST_3_MONTHS = "last_3_months"
+    LAST_7_DAYS = 7, "Last 7 days"
+    LAST_30_DAYS = 30, "Last 30 days"
+    LAST_3_MONTHS = 90, "Last 3 months"
 
 
-def stats(request):
-    return render(
-        request,
-        "core/stats.html",
-        {
-            "projects_per_source": Project.objects.annotate(
-                protocol_pos=StrIndex("url", Value("://")),
-                after_protocol=Substr("url", 3 + F("protocol_pos")),
-                slash_pos=StrIndex(F("after_protocol"), Value("/")),
-                domain=Substr(F("after_protocol"), 1, F("slash_pos") - 1),
-            )
-            .values("domain")
-            .annotate(count=Count("domain"))
-            .order_by("-count"),
+class StatsView(TemplateView):
+    SOURCES = sorted(SOURCES_CONFIG.keys())
+    SOURCE_COLORS = [SOURCES_CONFIG[source]["color"] for source in SOURCES]
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ["core/stats.html#daily-projects-card"]
+        return ["core/stats.html"]
+
+    def get_projects_by_source(self):
+        return Project.objects.annotate(
+            protocol_pos=StrIndex("url", Value("://")),
+            after_protocol=Substr("url", 3 + F("protocol_pos")),
+            slash_pos=StrIndex(F("after_protocol"), Value("/")),
+            source=Substr(F("after_protocol"), 1, F("slash_pos") - 1),
+        )
+
+    def get_daily_stats(self, day_list):
+        daily_stats = (
+            self.get_projects_by_source()
+            .filter(published_at__gte=day_list[0])
+            .annotate(day=TruncDate("published_at"))
+            .values("day", "source")
+            .annotate(count=Count("id"))
+        )
+        return self._format_daily_counts(daily_stats, day_list)
+
+    def _format_daily_counts(self, daily_stats, day_list):
+        source_daily_count = []
+        for source in self.SOURCES:
+            counts = [
+                next((item["count"] for item in daily_stats if item["source"] == source and item["day"] == day), 0)
+                for day in day_list
+            ]
+            source_daily_count.append({"name": source, "data": counts})
+        return source_daily_count
+
+    def _calculate_source_totals(self, daily_stats):
+        source_totals = {}
+        for source_count in daily_stats:
+            source = source_count["name"]
+            source_totals[source] = sum(source_count["data"])
+        return source_totals
+
+    def get_day_list(self):
+        period = self.request.GET.get("period")
+        period = period if period in PeriodOption.values else PeriodOption.LAST_7_DAYS.value
+        start_date = timezone.now().date() - timedelta(days=1)
+        day_list = [start_date - timedelta(days=i) for i in range(int(period))]
+        day_list.reverse()
+        return day_list
+
+    def get(self, request, *args, **kwargs):
+        projects_by_source = (
+            self.get_projects_by_source().values("source").annotate(total=Count("id")).order_by("source")
+        )
+        day_list = self.get_day_list()
+        source_daily_count = self.get_daily_stats(day_list)
+        source_total = self._calculate_source_totals(source_daily_count)
+        context = {
+            "source_daily_count": source_daily_count,
+            "source_totals": source_total,
+            "daily_total": sum(source_total.values()),
+            "source_colors": self.SOURCE_COLORS,
+            "day_list": day_list,
+            "projects_per_source": list(projects_by_source),
             "project_count": Project.objects.count(),
             "PeriodOption": PeriodOption,
-        },
-    )
+            "selected_period_label": dict(PeriodOption.choices).get(
+                self.request.GET.get("period"),
+                PeriodOption.LAST_7_DAYS.label,
+            ),
+        }
+        return self.render_to_response(context)
 
 
-def get_project_count_card(request):
-    qs = Project.objects.all()
-    now = timezone.now()
-    context = {
-        "PeriodOption": PeriodOption,
-    }
-    match request.GET.get("period"):
-        case PeriodOption.LAST_7_DAYS.value:
-            context["project_count"] = qs.filter(published_at__date__gte=now - timedelta(days=7)).count()
-            context["selected_period"] = PeriodOption.LAST_7_DAYS.label
-        case PeriodOption.LAST_30_DAYS.value:
-            context["project_count"] = qs.filter(published_at__date__gte=now - timedelta(days=30)).count()
-            context["selected_period"] = PeriodOption.LAST_30_DAYS.label
-        case PeriodOption.LAST_3_MONTHS.value:
-            context["project_count"] = qs.filter(published_at__date__gte=now - timedelta(days=90)).count()
-            context["selected_period"] = PeriodOption.LAST_3_MONTHS.label
-        case _:
-            context["project_count"] = qs.count()
-            context["selected_period"] = PeriodOption.ALL_TIME.label
-
-    return render(request, "core/stats.html#project-count-card", context)
+stats_view = StatsView.as_view()
 
 
 def project_archive_view(request):
