@@ -37,3 +37,9 @@ document.querySelectorAll(".expand-btn").forEach((expandButton) => {
     }, { once: true });
   });
 });
+
+
+function renderChart(element, config) {
+    window.ApexCharts &&
+        new ApexCharts(element, config).render();
+}

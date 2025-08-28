@@ -4,6 +4,8 @@ from datetime import timedelta
 from django import template
 from django.utils import timezone
 
+from core.scrapers import SOURCES_CONFIG
+
 register = template.Library()
 
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -30,3 +32,11 @@ def short_since(value):
         return f"{value.day} {MONTHS[value.month - 1]}"
 
     return value.strftime("%Y-%m-%d")
+
+
+@register.simple_tag
+def source_color(source):
+    source_config = SOURCES_CONFIG.get(source)
+    if source_config:
+        return source_config["color"]
+    return ""
