@@ -62,3 +62,7 @@
 .htmx-request.spinner-backdrop {
     display: flex;
 }
+
+.stretched-link::after {
+    display: none;
+}

@@ -56,20 +56,22 @@
                 </div>
                 <div class="card-text mb-2 fs-3">
                   <h3 dir="auto">
-                    <a href="{{ project.url }}" target="_blank">{{ project.title }}</a>
+                    <a href="{{ project.url }}" class="position-relative" target="_blank">{{ project.title }}</a>
                   </h3>
-                  <div class="text-clip"
-                       dir="auto"
-                       hx-put="{% url 'core:mark-viewed' project.pk %}"
-                       hx-trigger="intersect threshold:1 once"
-                       hx-on::after-request="if(event.detail.successful)this.closest('.project-card').querySelector('.viewed').classList.remove('d-none')">
-                    {% if project.source == 'emploitic.com' %}
-                      {{ project.description|safe }}
-                    {% else %}
-                      {{ project.description|linebreaks }}
-                    {% endif %}
+                  <div class="position-relative">
+                    <div class="text-clip"
+                         dir="auto"
+                         hx-put="{% url 'core:mark-viewed' project.pk %}"
+                         hx-trigger="intersect threshold:1 once"
+                         hx-on::after-request="if(event.detail.successful)this.closest('.project-card').querySelector('.viewed').classList.remove('d-none')">
+                      {% if project.source == 'emploitic.com' %}
+                        {{ project.description|safe }}
+                      {% else %}
+                        {{ project.description|linebreaks }}
+                      {% endif %}
+                    </div>
+                    <a class="expand-btn stretched-link">Show more</a>
                   </div>
-                  <a class="expand-btn stretched-link">Show more</a>
                 </div>
               </div>
             </div>
