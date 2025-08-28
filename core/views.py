@@ -44,9 +44,9 @@ def home(request):
 
 
 class PeriodOption(TextChoices):
-    LAST_7_DAYS = 7, "Last 7 days"
-    LAST_30_DAYS = 30, "Last 30 days"
-    LAST_3_MONTHS = 90, "Last 3 months"
+    LAST_7_DAYS = "7", "Last 7 days"
+    LAST_30_DAYS = "30", "Last 30 days"
+    LAST_3_MONTHS = "90", "Last 3 months"
 
 
 class StatsView(TemplateView):
