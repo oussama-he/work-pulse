@@ -8,6 +8,11 @@
     border-top-left-radius: var(--tblr-card-border-radius);
 }
 
+.project-card:last-child {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
 .project-card .avatar {
     width: 48px;
     height: 48px;
