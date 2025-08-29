@@ -25,7 +25,6 @@ def home(request):
     get_new_projects()
     new_projects = Project.objects.filter(viewed__isnull=True).order_by(F("published_at").desc(nulls_last=True))
     new_projects_stats = {
-        "Total": new_projects.count(),
         "emploitic.com": new_projects.filter(url__icontains="https://emploitic.com/").count(),
         "nafezly.com": new_projects.filter(url__icontains="https://nafezly.com/").count(),
         "ouedkniss.com": new_projects.filter(url__icontains="https://ouedkniss.com/").count(),

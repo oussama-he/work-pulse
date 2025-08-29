@@ -11,14 +11,40 @@
 {% endblock page_title %}
 {% block content %}
   <div class="row mb-3">
-    {% for source, count in new_projects_stats.items %}
-      <div class="col-6 col-lg-2">
-        <span class="text-muted">{{ source }}:</span>
-        <span class="fw-bold">{{ count }}</span>
+    <div class="col-md-4 mb-3">
+      <div class="row g-3 sticky-md-top">
+        {% for source, count in new_projects_stats.items %}
+          <div class="col-6">
+            <div class="card p-2 shadow-sm">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div class="text-muted mb-2">{{ source }}</div>
+                  <div class="fs-3 fw-bold">{{ count }}</div>
+                </div>
+                <div class="col text-end">
+                  <img src="{% static 'img/'|add:source|add:'.png' %}"
+                       width="45"
+                       alt="{{ source }} logo" />
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="col-12">
+          <div class="card p-2 shadow-sm">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <div class="text-muted mb-2">Total</div>
+                <div class="fs-3 fw-bold">{{ projects.count }}</div>
+              </div>
+              <div class="col text-end">
+                <img src="{% static 'img/sum.svg' %}" width="45" alt="sum logo" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    {% endfor %}
-  </div>
-  <div class="row justify-content-center">
+    </div>
     <div class="col-md-8">
       {% for project in projects %}
         <div class="card project-card">
