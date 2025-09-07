@@ -19,7 +19,16 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
+from config.views import favicon_file
+
 urlpatterns = [
+    path("apple-touch-icon.png", favicon_file),
+    path("favicon.ico", favicon_file),
+    path("favicon-96x96.png", favicon_file),
+    path("favicon.svg", favicon_file),
+    path("web-app-manifest-192x192.png", favicon_file),
+    path("web-app-manifest-512x512.png", favicon_file),
+    path("site.webmanifest", favicon_file),
     path("admin/", admin.site.urls),
     path("", include("core.urls", namespace="core")),
 ]
