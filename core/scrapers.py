@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from typing import Any
@@ -34,8 +35,8 @@ SOURCES_CONFIG = {
         "color": "#0290FE",
     },
     "emploitic.com": {
-        "url": "https://emploitic.com/api/v4/jobs?sort[0]=publishedAt_timestamp:desc&filter=(criteria.profession.id=%27a0d04378f37973ffa3b2aa8b3e27a3f0a98de06d%27)&pagination[page]=1&pagination[pageSize]=20",
-        "parser": "json",
+        "url": "https://emploitic.com/offres-d-emploi?profession=a0d04378f37973ffa3b2aa8b3e27a3f0a98de06d",
+        "parser": "html",
         "type": "job",
         "color": "#02C97B",
     },
@@ -222,7 +223,8 @@ def fetch_emploitic_jobs() -> list[dict[str, Any]]:
 
     jobs = []
     try:
-        data = response.json()
+        soup = BeautifulSoup(response.content.decode("utf-8"), "html.parser")
+        data = json.loads(soup.select_one("script#__NEXT_DATA__").text.strip())
         base_url = "https://emploitic.com"
 
         def generate_job_url(job_alias, company_data):
@@ -241,7 +243,7 @@ def fetch_emploitic_jobs() -> list[dict[str, Any]]:
                 ),  # Assuming this is HTML description
                 "published_at": job.get("publishedAt"),
             }
-            for job in data.get("results", [])
+            for job in data["props"]["pageProps"]["searchResult"]["data"]
         )
 
     except Exception:
